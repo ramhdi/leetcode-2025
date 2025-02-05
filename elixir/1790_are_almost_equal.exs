@@ -25,23 +25,44 @@
 #   end
 # end
 
+# defmodule Solution do
+#   @spec are_almost_equal(s1 :: String.t(), s2 :: String.t()) :: boolean
+#   def are_almost_equal(s1, s2) when s1 == s2, do: true
+
+#   def are_almost_equal(s1, s2) do
+#     case mismatched_pairs(s1, s2) do
+#       [{c1, c2}, {c3, c4}] -> c1 == c4 and c2 == c3
+#       [] -> true
+#       _ -> false
+#     end
+#   end
+
+#   defp mismatched_pairs(s1, s2) do
+#     String.to_charlist(s1)
+#     |> Enum.zip(String.to_charlist(s2))
+#     |> Enum.filter(fn {c1, c2} -> c1 != c2 end)
+#   end
+# end
+
 defmodule Solution do
   @spec are_almost_equal(s1 :: String.t(), s2 :: String.t()) :: boolean
   def are_almost_equal(s1, s2) when s1 == s2, do: true
 
   def are_almost_equal(s1, s2) do
-    case mismatched_pairs(s1, s2) do
+    case mismatched_pairs(s1, s2, []) do
       [{c1, c2}, {c3, c4}] -> c1 == c4 and c2 == c3
       [] -> true
       _ -> false
     end
   end
 
-  defp mismatched_pairs(s1, s2) do
-    String.to_charlist(s1)
-    |> Enum.zip(String.to_charlist(s2))
-    |> Enum.filter(fn {c1, c2} -> c1 != c2 end)
-  end
+  defp mismatched_pairs("", "", acc), do: acc
+
+  defp mismatched_pairs(<<c1::utf8, s1::binary>>, <<c2::utf8, s2::binary>>, acc) when c1 != c2,
+    do: mismatched_pairs(s1, s2, [{c1, c2} | acc])
+
+  defp mismatched_pairs(<<_c1::utf8, s1::binary>>, <<_c2::utf8, s2::binary>>, acc),
+    do: mismatched_pairs(s1, s2, acc)
 end
 
 defmodule Main do
