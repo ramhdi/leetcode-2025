@@ -2,8 +2,16 @@
 # 13/02/2025
 
 defmodule MinHeap do
+  @moduledoc """
+  A simple MinHeap implementation using Erlang's :gb_trees.
+  """
+
+  @type t :: :gb_trees.tree(any, non_neg_integer())
+
+  @spec new() :: t
   def new(), do: :gb_trees.empty()
 
+  @spec push(t, any) :: t
   def push(pq, value) do
     updated_pq =
       case :gb_trees.lookup(value, pq) do
@@ -14,6 +22,7 @@ defmodule MinHeap do
     updated_pq
   end
 
+  @spec pop(t) :: {any, t} | :empty
   def pop(pq) do
     case :gb_trees.smallest(pq) do
       {min, 1} -> {min, :gb_trees.delete(min, pq)}
@@ -23,15 +32,7 @@ defmodule MinHeap do
     _ -> :empty
   end
 
-  # Not used
-  # def peek(pq) do
-  #   case :gb_trees.smallest(pq) do
-  #     {min, _} -> {:ok, min}
-  #   end
-  # rescue
-  #   _ -> {:error, :empty}
-  # end
-
+  @spec from_list([any]) :: t
   def from_list(list) do
     Enum.reduce(list, new(), &push(&2, &1))
   end
